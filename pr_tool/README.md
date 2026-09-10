@@ -13,7 +13,8 @@ for you:
 2. Forks the selected Infineon repository to your account (or syncs an existing fork).
 3. Creates / switches to a branch named after your project.
 4. Commits and pushes your project's files (splitting large change sets into
-   chunks below GitHub's 2 GB per-push limit).
+   chunks under GitHub's ~2 GB per-push limit and about 2,500 files per
+   commit, so large Data folders stay reliable).
 5. Opens the resulting pull request in your browser.
 
 The same command can also be used to **update** an existing pull request &ndash;
@@ -130,8 +131,14 @@ When metadata is ready, the tool shows a preview and asks:
 * **n** &ndash; re-enter metadata (previous values are kept as defaults).
 * **a** &ndash; abort without saving.
 
-When the push completes, your browser opens the pull request page so you can
-review and submit it.
+When the push completes, the tool creates or reuses the pull request, waits
+until GitHub exposes it (up to about 5 minutes), then opens it in the browser
+and prints the PR URL. If that automatic step fails (common right after very
+large pushes), your project is usually already on the fork — open your fork or
+the Infineon repo in the browser; GitHub typically shows a banner with a
+**Compare & pull request** button. The tool also prints those links (plus a
+direct compare URL) so you can finish in a click without reading raw ``gh``
+errors.
 
 ### Interactive metadata
 
@@ -178,16 +185,20 @@ What happens under the hood:
    runs.
 3. Only the diff against your previous push is committed and pushed (file
    additions, modifications, and deletions are all handled).
-4. If a pull request is already open for that branch, the tool simply
-   **reopens it in your browser** &ndash; no new PR is created.
+4. If a pull request is already **open** for that branch, the tool simply
+   **opens it in your browser** &ndash; no new PR is created.
 
 Things to watch out for:
 
 * **Don't rename the project folder between runs** (or, if you must, pass
   `--name <SameCamelCaseName>` explicitly). Otherwise the tool will use a
   different branch and open a **new** pull request alongside the old one.
-* **If the pull request was closed on GitHub**, the next run will not reopen
-  it &ndash; it creates a fresh pull request on the same branch.
+* **If the pull request was closed or merged on GitHub**, the next run asks
+  whether to keep the existing fork branch or reset it and start fresh from
+  the current upstream `main`. Keeping the branch is the safe choice when you
+  want to preserve its history; resetting it is useful when you want a clean
+  PR without old branch history. An **open** PR is left alone and just opened
+  in the browser.
 * **Changing metadata on a subsequent run** &ndash; edit `metadata.json`
   directly and re-run (changes are pushed like any other file), or use
   `--override-metadata` to regenerate it interactively.
@@ -330,9 +341,13 @@ python ./pr_tool.py \
   in but missing permissions, the tool runs `gh auth refresh` for the
   `workflow` scope instead of asking for a full login when possible. If the
   token is invalid, run `gh auth login -h github.com` for that binary.
-* **Your fork is out of sync** &mdash; the tool can recreate your fork
-  automatically; it will prompt you to grant the `delete_repo` scope first.
+* **Your fork is out of sync** &mdash; the tool tries to sync your fork's
+  `main` with Infineon. If that fails, it asks before deleting and recreating
+  the entire fork (which would remove all other branches on that fork). It will
+  also prompt to grant the `delete_repo` scope when recreation is confirmed.
 
-By default the tool prints short progress lines only. For full command output,
-run with `--verbose` (or `-v`); that prints every `git` and `gh` command and
-is the first place to look when something goes wrong.
+By default the tool prints short progress lines, a simple progress bar while
+staging/pushing, and an animated status spinner during long waits (clone,
+branch switch, scanning large folders). For full command output, run with
+`--verbose` (or `-v`); that prints every `git` and `gh` command and is the
+first place to look when something goes wrong.

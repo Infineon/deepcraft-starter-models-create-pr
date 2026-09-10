@@ -45,7 +45,7 @@ GitHub auth, fork sync, branching, push, and opens the PR in your browser.
 | **`pr_tool/validation.py`** | Validates project layout and loaded `metadata.json` (missing fields, values outside AI Hub suggested lists with optional continue, derived-field repair). |
 | **`pr_tool/image_selector.py`** | Loads `images.json`, exposes available tags/images, and picks the best tag overlap for auto-selection (fallback `deepcraft.webp`). |
 | **`pr_tool/images.json`** | Shipped catalog of `{name, tags}` entries used for thumbnail/main image selection. |
-| **`pr_tool/utils.py`** | `group_files()` splits diffs into push chunks under GitHub's 2 GB limit; readonly cleanup helper for git scratch removal. |
+| **`pr_tool/utils.py`** | `group_files()` splits diffs into push chunks under GitHub's ~2 GB and ~2,500-file limits; readonly cleanup helper for git scratch removal. |
 | **`pr_tool/gh.exe`** | Bundled GitHub CLI for Windows (preferred over `PATH` when present). |
 | **`pr_tool/LICENSE`** | License text for the tool distribution. |
 | **`pr_tool/metadata/__init__.py`** | Public metadata API: `collect_metadata`, `finalize_metadata`, `format_metadata_json`, `get_metadata_schema`. |

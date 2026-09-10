@@ -135,9 +135,15 @@ def validate_loaded_metadata(
 
 
 def _repair_image_mirror(metadata: dict) -> dict:
+    from metadata.image_field import normalize_project_image_name
+
     thumb = metadata.get('thumbnail_image_id')
     if isinstance(thumb, str) and thumb.strip():
+        thumb = normalize_project_image_name(thumb)
+        metadata['thumbnail_image_id'] = thumb
         metadata['main_image_id'] = thumb
+    elif isinstance(metadata.get('main_image_id'), str) and metadata['main_image_id'].strip():
+        metadata['main_image_id'] = normalize_project_image_name(metadata['main_image_id'])
     return metadata
 
 

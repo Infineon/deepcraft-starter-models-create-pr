@@ -5,6 +5,10 @@ MAIN_BRANCH = 'main'
 GIT_DIR = '.git_deepcraft'
 MINIMUM_UPDATABLE_GIT_VERSION = '2.16.2'  # update-git-for-windows option
 MINIMUM_GIT_VERSION = '2.43'  # git show-ref --exists
+# Split large pushes before hitting GitHub's ~2 GB / push soft limit and the
+# ~3,000-file PR file list. Keep commits smaller so staging/push/PR create stay reliable.
+GH_PUSH_MAX_BYTES = (2 * 1024 * 1024 * 1024) - 1
+GH_PUSH_MAX_FILES = 2500
 
 # ── Self-update ──────────────────────────────────────────────
 # Public GitHub repository hosting this tool; used to fetch newer versions.

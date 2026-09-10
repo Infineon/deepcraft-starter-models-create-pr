@@ -71,6 +71,10 @@ class Input:
         self.repo_key = args.repo
         self.target_repo = get_target_repo(args.repo)
         self.project_path = Path(args.path).resolve()
+        if not self.project_path.exists():
+            raise ValueError(f'Project path does not exist: {self.project_path}')
+        if not self.project_path.is_dir():
+            raise ValueError(f'Project path is not a directory: {self.project_path}')
         self.project_name = args.name or self.project_path.name
         get_project_layout(self.target_repo.project_layout).validate_project_name(
             self.project_name,
