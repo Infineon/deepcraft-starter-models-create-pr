@@ -33,7 +33,11 @@ _SHARED_FIELDS: tuple[FieldSpec, ...] = (
         cli_action='append',
     ),
     FieldSpec('domain', 'Domain', 'multi_choice', choices=c.DOMAIN),
-    FieldSpec('application', 'Application', 'multi_choice', choices=c.APPLICATION),
+    FieldSpec(
+        'application', 'Application', 'multi_choice',
+        choices=c.APPLICATION,
+        allow_custom=False,
+    ),
     FieldSpec('use_case', 'Use case', 'multi_choice', choices=c.USE_CASE),
     FieldSpec('kit', 'Kit', 'multi_choice', choices=c.KIT),
     FieldSpec('device', 'Device', 'multi_choice', choices=c.DEVICE),
